@@ -95,15 +95,30 @@ export type QueryValue =
 /**
  * 通用 URL 查询参数。
  *
- * 例如：
- * {
- *   page: 1,
- *   pageSize: 20,
- *   status: 'PENDING'
- * }
+ * ArkTS 不支持把对象字面量赋给 Record 等动态对象类型，
+ * 因此这里用显式声明的类封装 Map。
  */
-export type QueryParams =
-  Record<string, QueryValue>
+export class QueryParams {
+  private values: Map<string, QueryValue> =
+    new Map<string, QueryValue>()
+
+  set(key: string, value: QueryValue): QueryParams {
+    if (value !== null && value !== undefined) {
+      this.values.set(key, value)
+    }
+    return this
+  }
+
+  forEach(
+    callback: (value: QueryValue, key: string) => void
+  ): void {
+    this.values.forEach(
+      (value: QueryValue, key: string) => {
+        callback(value, key)
+      }
+    )
+  }
+}
 
 /**
  * 通用分页查询参数。
