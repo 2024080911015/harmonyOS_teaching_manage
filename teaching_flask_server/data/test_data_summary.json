@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-07-11T14:49:07",
+  "database": "C:\\Users\\iiijj\\Desktop\\teaching_flask_server\\data\\teaching.db",
+  "shared_password": "Test123456",
+  "accounts": {
+    "student": "test_student_0001 ...",
+    "teacher": "test_teacher_001 ...",
+    "academic_staff": "test_staff_001 ...",
+    "admin": "test_admin_01 ..."
+  },
+  "role_counts": {
+    "STUDENT": 1800,
+    "TEACHER": 150,
+    "ACADEMIC_STAFF": 40,
+    "ADMIN": 10
+  },
+  "table_counts": {
+    "academic_staff_profile": 50,
+    "approval_record": 590,
+    "auth_token": 120,
+    "class_group": 60,
+    "classroom": 100,
+    "course": 240,
+    "course_enrollment": 10937,
+    "course_schedule": 240,
+    "department": 8,
+    "leave_request": 600,
+    "leave_request_course": 900,
+    "notification": 120,
+    "notification_recipient": 61284,
+    "room_booking": 500,
+    "room_booking_log": 972,
+    "schedule_change": 180,
+    "semester": 4,
+    "student_profile": 1800,
+    "sys_user": 2000,
+    "teacher_profile": 150
+  }
+}
