@@ -1,0 +1,17 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/LoginPage",
+    "pages/MainPage",
+    "pages/StudentHomePage",
+    "pages/TeacherHomePage",
+    "pages/CourseManagementPage",
+    "pages/ApprovalPage",
+    "pages/TeacherPage",
+    "pages/TeacherAdjustmentPage",
+    "pages/ClassroomStatusPage",
+    "pages/StudentLeaveManagementPage",
+    "pages/TeacherLeaveApprovalPage",
+    "pages/SchedulePage"
+  ]
+}

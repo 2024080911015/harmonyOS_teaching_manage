@@ -29,18 +29,65 @@ export class SessionStore{
 
   private static store: preferences.Preferences | null = null
 
+  private static async openStore(context: common.Context): Promise<preferences.Preferences> {
+    try {
+      return await preferences.getPreferences(context, { name: SessionStore.STORE_NAME })
+    } catch (error) {
+      throw SessionStore.storageError('初始化', error as Object)
+    }
+  }
+
+  private static async putValue(
+    store: preferences.Preferences,
+    key: string,
+    value: preferences.ValueType
+  ): Promise<void> {
+    try {
+      await store.put(key, value)
+    } catch (error) {
+      throw SessionStore.storageError('写入', error as Object)
+    }
+  }
+
+  private static async getValue(
+    store: preferences.Preferences,
+    key: string,
+    defaultValue: preferences.ValueType
+  ): Promise<preferences.ValueType> {
+    try {
+      return await store.get(key, defaultValue)
+    } catch (error) {
+      throw SessionStore.storageError('读取', error as Object)
+    }
+  }
+
+  private static async flushStore(store: preferences.Preferences): Promise<void> {
+    try {
+      await store.flush()
+    } catch (error) {
+      throw SessionStore.storageError('保存', error as Object)
+    }
+  }
+
+  private static async clearStore(store: preferences.Preferences): Promise<void> {
+    try {
+      await store.clear()
+    } catch (error) {
+      throw SessionStore.storageError('清除', error as Object)
+    }
+  }
+
+  private static storageError(action: string, error: Object): Error {
+    const cause: Error = error as Error
+    return new Error(`会话数据${action}失败：${cause.message}`)
+  }
+
   //初始化数据库用
   static async init(context:common.Context):Promise<void>{
     if (SessionStore.store !== null) {
       return
     }
-    SessionStore.store =
-      await preferences.getPreferences(
-        context,
-        {
-          name: SessionStore.STORE_NAME
-        }
-      )
+    SessionStore.store = await SessionStore.openStore(context)
   }
 
   //返回保存的登录状态
@@ -60,38 +107,44 @@ export class SessionStore{
     const store: preferences.Preferences =
       SessionStore.requireStore()
 
-    await store.put(
+    await SessionStore.putValue(
+      store,
       SessionStore.KEY_TOKEN,
       session.token
     )
 
-    await store.put(
+    await SessionStore.putValue(
+      store,
       SessionStore.KEY_USER_ID,
       session.userId
     )
 
-    await store.put(
+    await SessionStore.putValue(
+      store,
       SessionStore.KEY_ACCOUNT,
       session.account
     )
 
-    await store.put(
+    await SessionStore.putValue(
+      store,
       SessionStore.KEY_REAL_NAME,
       session.realName
     )
 
-    await store.put(
+    await SessionStore.putValue(
+      store,
       SessionStore.KEY_ROLE,
       session.role
     )
 
-    await store.put(
+    await SessionStore.putValue(
+      store,
       SessionStore.KEY_EXPIRES_AT,
       session.expiresAt
     )
 
     // 将修改真正写入持久化存储。
-    await store.flush()
+    await SessionStore.flushStore(store)
   }
 
   //获取token
@@ -105,7 +158,8 @@ export class SessionStore{
     const store: preferences.Preferences =
       SessionStore.requireStore()
 
-    const value = await store.get(
+    const value = await SessionStore.getValue(
+      store,
       SessionStore.KEY_TOKEN,
       ''
     )
@@ -126,7 +180,8 @@ export class SessionStore{
     const store: preferences.Preferences =
       SessionStore.requireStore()
 
-    const value = await store.get(
+    const value = await SessionStore.getValue(
+      store,
       SessionStore.KEY_USER_ID,
       0
     )
@@ -147,7 +202,8 @@ export class SessionStore{
     const store: preferences.Preferences =
       SessionStore.requireStore()
 
-    const value = await store.get(
+    const value = await SessionStore.getValue(
+      store,
       SessionStore.KEY_ROLE,
       ''
     )
@@ -168,32 +224,38 @@ export class SessionStore{
     const store: preferences.Preferences =
       SessionStore.requireStore()
 
-    const tokenValue = await store.get(
+    const tokenValue = await SessionStore.getValue(
+      store,
       SessionStore.KEY_TOKEN,
       ''
     )
 
-    const userIdValue = await store.get(
+    const userIdValue = await SessionStore.getValue(
+      store,
       SessionStore.KEY_USER_ID,
       0
     )
 
-    const accountValue = await store.get(
+    const accountValue = await SessionStore.getValue(
+      store,
       SessionStore.KEY_ACCOUNT,
       ''
     )
 
-    const realNameValue = await store.get(
+    const realNameValue = await SessionStore.getValue(
+      store,
       SessionStore.KEY_REAL_NAME,
       ''
     )
 
-    const roleValue = await store.get(
+    const roleValue = await SessionStore.getValue(
+      store,
       SessionStore.KEY_ROLE,
       ''
     )
 
-    const expiresAtValue = await store.get(
+    const expiresAtValue = await SessionStore.getValue(
+      store,
       SessionStore.KEY_EXPIRES_AT,
       ''
     )
@@ -263,8 +325,8 @@ export class SessionStore{
     const store: preferences.Preferences =
       SessionStore.requireStore()
 
-    await store.clear()
-    await store.flush()
+    await SessionStore.clearStore(store)
+    await SessionStore.flushStore(store)
   }
 
   /**
